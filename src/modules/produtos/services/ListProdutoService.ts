@@ -1,7 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { ProdutosRepository } from './../typeorm/repositories/ProdutosRepository';
 import { getCustomRepository } from 'typeorm';
-import Produto from '../typeorm/entidades/Produto';
+import Produto from '../typeorm/model/Produto';
 
 class ListProdutoService {
   /**Metodo Execute que sera chamado na Controller */
