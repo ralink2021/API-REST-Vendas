@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import express, { Response, Request, NextFunction } from 'express';
-import { errors } from 'celebrate';
+import { errors } from  'celebrate';
 import cors from 'cors';
 import 'express-async-errors';
 import routes from './routes';
@@ -23,6 +23,7 @@ app.use(
         message: error.message,
       });
     }
+    console.log(error);
     return response.status(500).json({
       status: 'error',
       message: 'Error Interno do Servidor',
@@ -33,3 +34,5 @@ app.use(
 app.listen(3333, () => {
   console.log('Servidor Online!');
 });
+
+
