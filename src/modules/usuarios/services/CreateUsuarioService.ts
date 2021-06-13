@@ -1,4 +1,5 @@
 import AppError from '@shared/errors/AppError';
+import { hash } from 'bcryptjs';
 import { getCustomRepository } from 'typeorm';
 import Usuario from '../typeorm/model/Usuario';
 import UsuarioRepository from '../typeorm/repositories/UsuarioRepository';
@@ -18,10 +19,14 @@ class CreateUsuarioService {
     if (emailExists) {
       throw new AppError('Endereço de Email ja Existente!');
     }
+
+    /** Realiza a Criptografia da Senha */
+    const hashPassword = await hash(password, 8)
+
     const usuario = usuarioRepository.create({
       nome,
       email,
-      password,
+      password: hashPassword,
     });
     await usuarioRepository.save(usuario);
     return usuario;
