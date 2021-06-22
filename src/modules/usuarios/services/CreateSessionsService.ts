@@ -1,5 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { compare, hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+import authConfig from '@config/auth';
 import { getCustomRepository } from 'typeorm';
 import Usuario from '../typeorm/model/Usuario';
 import UsuarioRepository from '../typeorm/repositories/UsuarioRepository';
@@ -10,10 +12,15 @@ interface IRequest {
   password: string;
 }
 
+interface IResponse {
+  usuario: Usuario;
+  token: string;
+}
+
 
 class CreateSessionsService {
   /**Metodo Execute que sera chamado na Controller */
-  public async execute({ email, password }: IRequest): Promise<Usuario> {
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
     const usuarioRepository = getCustomRepository(UsuarioRepository);
     const usuario = await usuarioRepository.findByEmail(email);
 
@@ -27,7 +34,17 @@ class CreateSessionsService {
     if (!passwordConfirmed) {
       throw new AppError('Email ou Senha Incorreto!', 401);
     }
-    return usuario;
+
+    /** Configuração do Token JWS */
+    const token = sign({}, authConfig.jwt.secret, {
+      subject: usuario.id,
+      expiresIn: authConfig.jwt.expiresIn
+    })
+
+    return {
+      usuario,
+      token,
+    };
   }
 }
 
