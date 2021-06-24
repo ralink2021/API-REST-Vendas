@@ -39,6 +39,7 @@ class ResetPasswordService {
 
     /** Alterar a Senha do Usuario apos as Validações */
     user.password = await hash(password, 8);
+    await usuarioRepository.save(user);
   }
 }
 
